@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { url } from "../../redux/config";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { contactsCreateApi, contactsEditApi } from "../../redux/api/contactsApis";
+
 
 const ContactFormModal = ({ show, onClose, contact, refresh }) => {
+  const dispatch = useDispatch();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -19,31 +22,40 @@ const ContactFormModal = ({ show, onClose, contact, refresh }) => {
   const onChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const submit = async (e) => {
+  const submit = (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("accessToken");
-
     if (contact) {
-      await axios.put(`${url}/contacts/${contact._id}`, form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      dispatch(
+        contactsEditApi(
+          { ...form, id: contact._id },
+          () => {
+            refresh();
+            onClose();
+          },
+          (err) => console.error(err)
+        )
+      );
     } else {
-      await axios.post(`${url}/contacts`, form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      dispatch(
+        contactsCreateApi(
+          form,
+          () => {
+            refresh();
+            onClose();
+          },
+          (err) => console.error(err)
+        )
+      );
     }
-
-    refresh();
-    onClose();
   };
 
   return (
     <div className={`modal fade ${show ? "show d-block" : ""}`}>
+
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content border-0 shadow-lg rounded-4">
 
-          {/* Header */}
           <div className="modal-header bg-success text-white rounded-top-4">
             <h5 className="modal-title">
               {contact ? "Edit Contact" : "Add Contact"}
@@ -51,72 +63,39 @@ const ContactFormModal = ({ show, onClose, contact, refresh }) => {
             <button className="btn-close btn-close-white" onClick={onClose}></button>
           </div>
 
-          {/* Form */}
           <form onSubmit={submit}>
             <div className="modal-body p-4">
 
-              <label className="fw-semibold">Name</label>
-              <input
-                required
-                name="name"
+              <input name="name" required placeholder="Name"
                 className="form-control form-control-lg rounded-3 mb-3"
-                placeholder="Name"
-                value={form.name}
-                onChange={onChange}
-              />
+                value={form.name} onChange={onChange} />
 
-              <label className="fw-semibold">Email</label>
-              <input
-                required
-                name="email"
+              <input name="email" required placeholder="Email"
                 className="form-control form-control-lg rounded-3 mb-3"
-                placeholder="Email"
-                value={form.email}
-                onChange={onChange}
-              />
+                value={form.email} onChange={onChange} />
 
-              <label className="fw-semibold">Phone</label>
-              <input
-                name="phone"
+              <input name="phone" placeholder="Phone"
                 className="form-control form-control-lg rounded-3 mb-3"
-                placeholder="Phone"
-                value={form.phone}
-                onChange={onChange}
-              />
+                value={form.phone} onChange={onChange} />
 
-              <label className="fw-semibold">Company</label>
-              <input
-                name="company"
+              <input name="company" placeholder="Company"
                 className="form-control form-control-lg rounded-3 mb-3"
-                placeholder="Company"
-                value={form.company}
-                onChange={onChange}
-              />
+                value={form.company} onChange={onChange} />
 
-              <label className="fw-semibold">Status</label>
-              <select
-                name="status"
+              <select name="status"
                 className="form-select form-select-lg rounded-3 mb-3"
-                value={form.status}
-                onChange={onChange}
-              >
+                value={form.status} onChange={onChange}>
                 <option>Lead</option>
                 <option>Prospect</option>
                 <option>Customer</option>
               </select>
 
-              <label className="fw-semibold">Notes</label>
-              <textarea
-                name="notes"
+              <textarea name="notes" placeholder="Notes"
                 className="form-control rounded-3"
-                placeholder="Notes"
-                rows="3"
-                value={form.notes}
-                onChange={onChange}
-              />
+                rows="3" value={form.notes} onChange={onChange} />
+
             </div>
 
-            {/* Footer */}
             <div className="modal-footer border-0 p-3">
               <button type="button" className="btn btn-light border rounded-pill px-4" onClick={onClose}>
                 Cancel
@@ -126,10 +105,12 @@ const ContactFormModal = ({ show, onClose, contact, refresh }) => {
                 {contact ? "Save" : "Add Contact"}
               </button>
             </div>
+
           </form>
 
         </div>
       </div>
+
     </div>
   );
 };

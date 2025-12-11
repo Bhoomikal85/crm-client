@@ -1,120 +1,56 @@
 import { call, takeLatest } from "redux-saga/effects";
 import * as contactsApis from "../api/contactsApis"
-import { CONTACTS_CREATE, CONTACTS_DELETE, CONTACTS_EDIT, CONTACTS_LIST, CONTACTS_VIEW } from "../actions/types";
+import { CONTACT_CREATE, CONTACT_DELETE, CONTACT_EDIT, CONTACT_LIST, CONTACT_VIEW } from "../actions/types";
 
-
-export function* contactsListWorker(action) {
+function* listWorker({ params, onSuccess, onError }) {
     try {
-        const res = yield call(contactsApis.contactsListApi, action.data);
-
-        if (res.status == 200) {
-            yield action.onSuccess(res);
-        } else {
-            yield action.onError(res);
-        }
-    } catch (error) {
-        yield action.onError({
-            data: {
-                message: error,
-            },
-        });
+        const res = yield call(contactsApis.contactsListApi, params);
+        res.status === 200 ? onSuccess(res) : onError(res);
+    } catch (err) {
+        onError(err.response || err);
     }
 }
 
-
-
-export function* contactsEditWorker(action) {
+function* viewWorker({ id, onSuccess, onError }) {
     try {
-        const res = yield call(contactsApis.contactsEditApi,action.data );
-        if (res.status == 200) {
-            yield action.onSuccess(res);
-        } else {
-            yield action.onError(res);
-        }
-    } catch (error) {
-        yield action.onError({
-            data: {
-                message: error,
-            },
-        });
+        const res = yield call(contactsApis.contactsViewApi, id);
+        res.status === 200 ? onSuccess(res) : onError(res);
+    } catch (err) {
+        onError(err.response || err);
     }
 }
 
-export function* contactsViewWorker(action) {
+function* createWorker({ data, onSuccess, onError }) {
     try {
-        const res = yield call(contactsApis.contactsViewApi, {
-            id: action.id,
-        });
-        if (res.status == 200) {
-            yield action.onSuccess(res);
-        } else {
-            yield action.onError(res);
-        }
-    } catch (error) {
-        yield action.onError({
-            data: {
-                message: error,
-            },
-        });
+        const res = yield call(contactsApis.contactsCreateApi, data);
+        res.status === 201 ? onSuccess(res) : onError(res);
+    } catch (err) {
+        onError(err.response || err);
     }
 }
 
-
-
-
-export function* contactsCreateWorker(action) {
+function* editWorker({ id, data, onSuccess, onError }) {
     try {
-        const res = yield call(contactsApis.contactsCreateApi, action.data);
-        if (res.status == 200) {
-            yield action.onSuccess(res);
-        } else {
-            yield action.onError(res);
-        }
-    } catch (error) {
-        yield action.onError({
-            data: {
-                message: error,
-            },
-        });
-    }
-}
-export function* contactsDeleteWorker(action) {
-    try {
-        const res = yield call(contactsApis.contactsDeleteApi, action.data);
-        if (res.status == 200) {
-            yield action.onSuccess(res);
-        } else {
-            yield action.onError(res);
-        }
-    } catch (error) {
-        yield action.onError({
-            data: {
-                message: error,
-            },
-        });
+        const res = yield call(contactsApis.contactsEditApi, id, data);
+        res.status === 200 ? onSuccess(res) : onError(res);
+    } catch (err) {
+        onError(err.response || err);
     }
 }
 
-
-
-
-export function* contactsListWatcher() {
-    yield takeLatest(CONTACTS_LIST, contactsListWorker);
+function* deleteWorker({ id, onSuccess, onError }) {
+    try {
+        const res = yield call(contactsApis.contactsDeleteApi, id);
+        res.status === 200 ? onSuccess(res) : onError(res);
+    } catch (err) {
+        onError(err.response || err);
+    }
 }
 
-export function* contactsEditWatcher() {
-    yield takeLatest(CONTACTS_EDIT, contactsEditWorker);
-}
-
-export function* contactsViewWatcher() {
-    yield takeLatest(CONTACTS_VIEW, contactsViewWorker);
-}
-
-
-export function* contactsCreateWatcher() {
-    yield takeLatest(CONTACTS_CREATE, contactsCreateWorker);
-}
-
-export function* contactsDeleteWatcher() {
-    yield takeLatest(CONTACTS_DELETE, contactsDeleteWorker);
+export function* contactSaga() {
+    yield takeLatest(CONTACT_LIST, listWorker);
+    yield takeLatest(CONTACT_VIEW, viewWorker);
+    yield takeLatest(CONTACT_CREATE, createWorker);
+    yield takeLatest(CONTACT_EDIT, editWorker);
+    yield takeLatest(CONTACT_DELETE, deleteWorker);
 }
