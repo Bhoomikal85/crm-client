@@ -1,0 +1,3 @@
+export const INDEX_LOADING = "INDEX_LOADING";
+export const INDEX_SUCCESS = "INDEX_SUCCESS";
+export const INDEX_FAIL = "INDEX_FAIL";

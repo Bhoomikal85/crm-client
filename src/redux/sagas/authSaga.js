@@ -1,5 +1,5 @@
 import { call, takeLatest } from "redux-saga/effects";
-import * as authApis from "../apis/authApis"
+import * as authApis from "../api/authApis"
 import { EMAIL_LOGIN, EMAIL_SIGNUP, GOOGLE_LOGIN } from "../actions/types";
 
 
