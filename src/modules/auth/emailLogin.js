@@ -16,12 +16,14 @@ const EmailLogin = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("/auth/login", form, { withCredentials: true });
+      const res = await axios.post("http://localhost:5000/api/auth/login", form, { withCredentials: true });
+
+
       setLoading(false);
 
       if (res.data?.accessToken) {
         localStorage.setItem("accessToken", res.data.accessToken);
-        navigate("/dashboard");
+        navigate("/contacts-dashboard");
       } else {
         setError("Invalid response from server");
       }
