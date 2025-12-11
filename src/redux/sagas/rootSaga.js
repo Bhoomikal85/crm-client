@@ -1,10 +1,11 @@
-import { all } from 'redux-saga/effects';
-import authSaga from './authSaga';
-import contactsSaga from './contactsSaga'; // we'll add next
+import { all } from "redux-saga/effects";
+import { emailLoginWorkerWatcher } from "./authSaga";
 
 export default function* rootSaga() {
-  yield all([
-    authSaga(),
-    contactsSaga()
-  ]);
+    yield all([
+
+        emailLoginWorkerWatcher(),
+
+
+    ]);
 }

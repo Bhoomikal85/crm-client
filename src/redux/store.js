@@ -1,13 +1,8 @@
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import authReducer from './reducers/authReducer';
-import contactReducer from './reducers/contactReducer';
-import rootSaga from './sagas/rootSaga';
+import { legacy_createStore as createStore, applyMiddleware } from "redux";
+import rootSaga from "./sagas/rootSaga.js";
+import createSagaMiddleware from "redux-saga";
+import rootReducers from "./reducers/rootReducer.js";
+const sagaMiddleware = createSagaMiddleware();
 
-const saga = createSagaMiddleware();
-const rootReducer = combineReducers({ auth: authReducer, contacts: contactReducer });
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(saga)));
-saga.run(rootSaga);
-export default store;
+export const store = createStore(rootReducers, applyMiddleware(sagaMiddleware));
+sagaMiddleware.run(rootSaga);
