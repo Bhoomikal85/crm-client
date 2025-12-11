@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { url } from "../../redux/config"; 
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("/auth/signup", form, { withCredentials: true });
+      const res = await axios.post(`${url}/auth/signup`, form, { withCredentials: true });
       setLoading(false);
 
       if (res.data?.accessToken) {

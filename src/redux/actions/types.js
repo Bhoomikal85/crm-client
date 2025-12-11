@@ -1,1 +1,8 @@
 export const EMAIL_LOGIN = "EMAIL_LOGIN";
+
+
+export const CONTACTS_CREATE = "CONTACTS_CREATE";
+export const CONTACTS_LIST = "CONTACTS_LIST";
+export const CONTACTS_EDIT = "CONTACTS_EDIT";
+export const CONTACTS_VIEW = "CONTACTS_VIEW";
+export const CONTACTS_DELETE = "CONTACTS_DELETE";

@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const token = localStorage.getItem("accessToken");
-  return token ? <Navigate to="/dashboard" replace /> : <Outlet />;
+  return token ? <Navigate to="/contacts-dashboard" replace /> : <Outlet />;
 };
 
 export default ProtectedRoute;
